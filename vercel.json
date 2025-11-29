@@ -1,41 +1,5 @@
 {
-     rewrites [
-       { source (.), destination index.html }
-     ]
-   }
-```
-
-最终结构：
-```
-soulmate-frontend
-├── index.html
-└── vercel.json
-```
-
----
-
-### 步骤2：上传到GitHub
-
-1. 登录GitHub
-2. 创建新仓库：`soulmate-frontend`
-3. 上传这2个文件
-4. Commit
-
----
-
-### 步骤3：部署到Vercel
-
-1. 登录 httpsvercel.com
-2. 点 Add New... → Project
-3. 选择 `soulmate-frontend` 仓库
-4. 不需要设置任何环境变量
-5. 直接点 Deploy
-6. 等待1-2分钟
-
----
-
-### 步骤4：测试
-
-部署完成后，Vercel会给你一个网址：
-```
-httpssoulmate-frontend-xxxxx.vercel.app
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
