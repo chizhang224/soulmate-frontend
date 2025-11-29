@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Your Soulmate | Astrology Reading</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .preview-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .chart-info {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .chart-item {
+            text-align: center;
+            margin: 10px;
+        }
+
+        .chart-item strong {
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .locked-content {
+            position: relative;
+        }
+
+        .blur {
+            filter: blur(8px);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .unlock-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .unlock-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-top: 30px;
+            font-size: 20px;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Step 1: Form -->
+        <div id="formStep">
+            <div class="header">
+                <h1>✨ Discover Your Soulmate ✨</h1>
+                <p>Written in the Stars, Revealed by Astrology</p>
+            </div>
+
+            <div class="form-card">
+                <form id="birthForm">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" name="name" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Birth Date</label>
+                        <div class="form-row">
+                            <input type="number" name="year" placeholder="Year" min="1900" max="2010" required>
+                            <input type="number" name="month" placeholder="Month" min="1" max="12" required>
+                            <input type="number" name="day" placeholder="Day" min="1" max="31" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Birth Time (as accurate as possible)</label>
+                        <div class="form-row">
+                            <input type="number" name="hour" placeholder="Hour (0-23)" min="0" max="23" required>
+                            <input type="number" name="minute" placeholder="Minute" min="0" max="59" required>
+                            <input type="text" value="00" disabled style="background: #f5f5f5;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Birth City</label>
+                        <input type="text" name="city" placeholder="e.g., New York" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select name="gender" required>
+                            <option value="female">Female (looking for male partner)</option>
+                            <option value="male">Male (looking for female partner)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email (to receive your full report)</label>
+                        <input type="email" name="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">
+                        Generate My Soulmate Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 2: Loading -->
+        <div id="loadingStep" class="hidden">
+            <div class="loading">
+                <div class="spinner"></div>
+                <h2>Reading Your Birth Chart...</h2>
+                <p>The stars are aligning ✨</p>
+            </div>
+        </div>
+
+        <!-- Step 3: Preview -->
+        <div id="previewStep" class="hidden">
+            <div class="preview-card">
+                <h1 style="text-align: center; color: #667eea; margin-bottom: 20px;">
+                    ✨ Your Soulmate Profile ✨
+                </h1>
+
+                <div class="chart-info" id="chartInfo"></div>
+
+                <div class="section">
+                    <div class="section-title">💫 Your Love Style</div>
+                    <p id="personalityAnalysis"></p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">💖 How You Approach Love</div>
+                    <p id="loveApproach"></p>
+                </div>
+
+                <div class="image-container locked-content">
+                    <p style="color: #667eea; font-weight: bold; margin-bottom: 10px;">
+                        Your Soulmate's Portrait
+                    </p>
+                    <img id="soulmateImage" class="blur" src="" alt="Soulmate Portrait">
+                    <div class="unlock-overlay">🔒 Unlock to Reveal</div>
+                </div>
+
+                <div class="section locked-content">
+                    <div class="section-title">👤 Physical Appearance</div>
+                    <p id="appearance" class="blur"></p>
+                    <div class="unlock-overlay">🔒 Unlock Full Details</div>
+                </div>
+
+                <div class="section locked-content">
+                    <div class="section-title">✨ Personality Traits</div>
+                    <p id="personality" class="blur"></p>
+                    <div class="unlock-overlay">🔒 Unlock Full Profile</div>
+                </div>
+
+                <div class="section locked-content">
+                    <div class="section-title">💼 Career & Lifestyle</div>
+                    <p id="career" class="blur"></p>
+                    <div class="unlock-overlay">🔒 Unlock to Reveal</div>
+                </div>
+
+                <div class="section locked-content">
+                    <div class="section-title">📍 Where You'll Meet</div>
+                    <p id="meeting" class="blur"></p>
+                    <div class="unlock-overlay">🔒 Unlock to Reveal</div>
+                </div>
+
+                <div class="section locked-content">
+                    <div class="section-title">📅 Best Timing in 2025</div>
+                    <p id="timing" class="blur"></p>
+                    <div class="unlock-overlay">🔒 Unlock to Reveal</div>
+                </div>
+
+                <button class="btn unlock-btn" id="unlockBtn">
+                    🔓 Unlock Full Report - $14.99
+                </button>
+
+                <p style="text-align: center; margin-top: 20px; color: #888;">
+                    Limited time: <strong style="color: #667eea;">50% OFF</strong> (was $29.99)
+                </p>
+            </div>
+        </div>
+
+        <!-- Error Display -->
+        <div id="errorDisplay" class="hidden error"></div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_URL = 'https://soulmate-backend-production-c20a.up.railway.app/api';
+        const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_8x2dRa1xxeXCb8E7z9aZi00';
+
+        let currentReadingId = null;
+
+        // Form submission
+        document.getElementById('birthForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                name: formData.get('name'),
+                year: parseInt(formData.get('year')),
+                month: parseInt(formData.get('month')),
+                day: parseInt(formData.get('day')),
+                hour: parseInt(formData.get('hour')),
+                minute: parseInt(formData.get('minute')),
+                city: formData.get('city'),
+                gender: formData.get('gender'),
+                email: formData.get('email'),
+                nation: 'US'
+            };
+
+            // Show loading
+            document.getElementById('formStep').classList.add('hidden');
+            document.getElementById('loadingStep').classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${API_URL}/create-reading`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate reading');
+                }
+
+                const result = await response.json();
+                currentReadingId = result.reading_id;
+
+                // Display preview
+                displayPreview(result);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to generate your reading. Please try again.');
+                document.getElementById('loadingStep').classList.add('hidden');
+                document.getElementById('formStep').classList.remove('hidden');
+            }
+        });
+
+        function displayPreview(data) {
+            // Chart info
+            const chartInfo = document.getElementById('chartInfo');
+            chartInfo.innerHTML = `
+                <div class="chart-item">
+                    <div>☀️ Sun</div>
+                    <strong>${data.chart.sun}</strong>
+                </div>
+                <div class="chart-item">
+                    <div>🌙 Moon</div>
+                    <strong>${data.chart.moon}</strong>
+                </div>
+                <div class="chart-item">
+                    <div>💗 Venus</div>
+                    <strong>${data.chart.venus}</strong>
+                </div>
+                <div class="chart-item">
+                    <div>⬆️ Rising</div>
+                    <strong>${data.chart.rising}</strong>
+                </div>
+            `;
+
+            // Preview content
+            document.getElementById('personalityAnalysis').textContent = data.preview.personality_analysis;
+            document.getElementById('loveApproach').textContent = data.preview.love_approach;
+            document.getElementById('soulmateImage').src = data.preview.blur_image_url;
+            document.getElementById('appearance').textContent = data.preview.soulmate_appearance;
+            document.getElementById('personality').textContent = data.preview.soulmate_personality;
+            document.getElementById('career').textContent = data.preview.soulmate_career;
+            document.getElementById('meeting').textContent = data.preview.meeting_places;
+            document.getElementById('timing').textContent = data.preview.best_timing;
+
+            // Show preview
+            document.getElementById('loadingStep').classList.add('hidden');
+            document.getElementById('previewStep').classList.remove('hidden');
+        }
+
+        // Unlock button
+        document.getElementById('unlockBtn').addEventListener('click', () => {
+            // Store reading ID for later
+            localStorage.setItem('readingId', currentReadingId);
+            
+            // Redirect to Stripe
+            window.location.href = STRIPE_PAYMENT_LINK;
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorDisplay');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
